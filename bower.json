@@ -1,0 +1,26 @@
+{
+    "name": "pling-ui-lite",
+    "description": "Lightweight Pling Framework",
+    "version": "0.1.0",
+    "main": "pling-ui-lite.js",
+    "moduleType": "amd",
+    "license": "UNLICENSED",
+    "homepage": "https://github.com/plingbr/bower-pling-ui-lite/blob/master/README.md",
+    "author": "Felipe Kautzmann <felipe.kautzmann@pling.net.br",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/plingbr/bower-pling-ui-lite"
+    },
+    "ignore": [
+        "node_modules",
+        "vendor",
+        "dist"
+    ],
+    "dependencies": {
+        "angular": "^1.5.8",
+        "angular-route": "~1.4.9"
+    },
+    "resolutions": {
+        "angular": ">=1.5.0"
+    }
+}
