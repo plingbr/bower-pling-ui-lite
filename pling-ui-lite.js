@@ -180,6 +180,13 @@
                     return false;
                 });
         };
+
+        this.getSocialMedia = function() {
+            return {
+                'facebook' : options.facebook,
+                'twitter'  : options.twitter
+            };
+        };
     }
 
 }());
