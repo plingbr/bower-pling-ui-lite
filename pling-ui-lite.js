@@ -197,9 +197,21 @@
         .module('plingUiLite')
         .service('credentialsService', CredentialsService);
 
-    CredentialsService.$inject = [ 'httpService', '$localstorage', 'coreApiService' ];
+    CredentialsService.$inject = [ 'httpService', '$localstorage', 'coreApiService', '$q' ];
 
-    function CredentialsService(httpService, $localstorage, core) {
+    function CredentialsService(httpService, $localstorage, core, $q) {
+
+        function getCredential(cb) {
+            httpService.get('accounts', 'me')
+                .success(function(data) {
+                    $localstorage.setObject('PLING-USER', data);
+                    return cb(null, data);
+                })
+                .error(function(reason) {
+                    console.log(reason); // eslint-disable-line
+                    return cb(reason);
+                });
+        }
 
         this.logout = function () {
             // Consumir o Core para o token entrar em Blacklist
@@ -209,9 +221,30 @@
                     core.redirectToLoginWithCallback();
                 })
                 .error(function(reason) {
-                    // Chamar Toastr
                     console.log(reason); // eslint-disable-line no-console
                 });
+        };
+
+        this.login = function(credential) {
+            var deferred = $q.defer();
+
+            httpService.post('accounts', 'login', credential)
+                .success(function(loginData) {
+                    $localstorage.set('PLING-TOKEN', loginData.token);
+
+                    getCredential(function(err, credential) {
+                        if (err)
+                            return deferred.reject(err);
+
+                        return deferred.resolve(null, credential);
+                    });
+                })
+                .error(function(reason) {
+                    console.log(reason); // eslint-disable-line
+                    return deferred.reject(reason);
+                });
+
+            return deferred.promise;
         };
 
         this.getLocal = function () {
@@ -223,6 +256,62 @@
             return userData;
         };
 
+    }
+
+}());
+(function() {
+    'use strict';
+
+    CustomersService.$inject = ['$localstorage', 'httpService', '$q'];
+
+    angular.module('plingUiLite').service('customersService', CustomersService);
+
+    function CustomersService($localstorage, httpService, $q) {
+
+        this.createCustomer = function(customer) {
+            var deferred = $q.defer();
+            var env = $localstorage.get('PLING-CURRENT-ENV');
+
+            httpService.post('accounts', 'customers/admin/' + env, customer)
+                .success(function(customerData) {
+                    deferred.resolve(customerData);
+                })
+                .error(function(reason) {
+                    console.log(reason); // eslint-disable-line
+                    deferred.reject(reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.updateCustomer = function(customer) {
+            var deferred = $q.defer();
+
+            httpService.put('accounts', 'customers', customer)
+                .success(function(data) {
+                    deferred.resolve(data);
+                })
+                .error(function(reason) {
+                    console.log(reason); // eslint-disable-line
+                    deferred.reject(reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.getCustomer = function(customerId) {
+            var deferred = $q.defer();
+
+            httpService.get('accounts', 'customers', customerId)
+                .success(function(data) {
+                    deferred.resolve(data);
+                })
+                .error(function(reason) {
+                    deferred.reject(reason);
+                });
+
+            return deferred.promise;
+        };
     }
 
 }());
@@ -401,6 +490,44 @@
     }
 
 }());
+(function() {
+    'use strict';
+
+    angular
+        .module('plingUiLite')
+        .service('cacheService', CachingService);
+
+    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
+
+    function CachingService($templateCache, $route, $http) {
+
+
+        this.cacheViews = function (cacheObj, routeObj) {
+
+            // setting defaults
+            var
+                partial, route,
+                viewCache = cacheObj || $templateCache,
+                router = routeObj || $route;
+
+            // looping routes
+            for (route in router.routes) {
+
+                if (router.routes.hasOwnProperty(route)) {
+
+                    // evaluate partial
+                    partial = router.routes[route].templateUrl;
+
+                    if (partial)
+                        // caching route
+                        $http.get(partial, {'cache': viewCache});
+                }
+            }
+        };
+    }
+
+}());
+
 (function (context, logger) {
     'use strict';
 
@@ -664,44 +791,6 @@
     // creating instance
     context.loader = new ConfLoader();
 }(window.pling));
-(function() {
-    'use strict';
-
-    angular
-        .module('plingUiLite')
-        .service('cacheService', CachingService);
-
-    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
-
-    function CachingService($templateCache, $route, $http) {
-
-
-        this.cacheViews = function (cacheObj, routeObj) {
-
-            // setting defaults
-            var
-                partial, route,
-                viewCache = cacheObj || $templateCache,
-                router = routeObj || $route;
-
-            // looping routes
-            for (route in router.routes) {
-
-                if (router.routes.hasOwnProperty(route)) {
-
-                    // evaluate partial
-                    partial = router.routes[route].templateUrl;
-
-                    if (partial)
-                        // caching route
-                        $http.get(partial, {'cache': viewCache});
-                }
-            }
-        };
-    }
-
-}());
-
 (function() {
     'use strict';
 
