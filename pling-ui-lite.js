@@ -93,6 +93,167 @@
     }
 
 }());
+(function () {
+    'use strict';
+
+    CardValidatorService.$inject = [ ];
+
+    angular.module('plingUiLite').service('cardValidatorService', CardValidatorService);
+
+    function CardValidatorService() {
+        var types = [];
+
+        types.push({
+            'niceType' : 'Visa',
+            'type' : 1,
+            'prefixPattern' : /^4$/,
+            'exactPattern' : /^4\d*$/,
+            'gaps' : [4, 8, 12],
+            'lengths' : [16],
+            'code' : {
+                'name' : 'CVV',
+                'size' : 3
+            }
+        });
+
+        types.push({
+            'niceType' : 'MasterCard',
+            'type' : 2,
+            'prefixPattern' : /^(5|5[1-5]|2|22|222|222[1-9]|2[3-6]|27[0-1]|2720)$/,
+            'exactPattern' : /^(5[1-5]|222[1-9]|2[3-6]|27[0-1]|2720)\d*$/,
+            'gaps' : [4, 8, 12],
+            'lengths' : [16],
+            'code' : {
+                'name' : 'CVV',
+                'size' : 3
+            }
+        });
+
+        function luhn10(identifier) {
+            var sum = 0;
+            var alt = false;
+            var i = identifier.length - 1;
+            var num;
+
+            while (i >= 0) {
+                num = parseInt(identifier.charAt(i), 10);
+
+                if (alt) {
+                    num *= 2;
+                    if (num > 9) {
+                        num = (num % 10) + 1; // eslint-disable-line no-extra-parens
+                    }
+                }
+
+                alt = !alt;
+
+                sum += num;
+
+                i--;
+            }
+
+            return sum % 10 === 0;
+        }
+
+        function validateDate (date) {
+            var now = new Date();
+            var month = parseInt(date.substr(0, 2), 10) - 1;
+            var year = parseInt(date.substr(2, 2), 10) + 2000;
+
+            if (month < 0 || month > 11 || year - now.getFullYear() > 15)
+                return false;
+
+            return new Date(year, month, 1).getTime() > now.getTime();
+        }
+
+        this.getValidYears = function() {
+            var i;
+            var nowYear = new Date().getFullYear();
+            var validYears = [];
+
+            for (i = nowYear; i <= nowYear + 15; i++)
+                validYears.push(i);
+
+            return validYears;
+        };
+
+        this.validate = function (cardNumber, dateExpiration, cvv) {
+            var number, numberResult, dateResult, i, validType;
+
+            if (!cardNumber)
+                return {
+                    'isValid' : false,
+                    'type'    : null
+                };
+
+            number = cardNumber.toString();
+
+            for (i=0; i<types.length; i++) {
+                if (types[i].exactPattern.test(number)) {
+                    validType = types[i];
+                    break;
+                }
+            }
+
+            if (!validType)
+                return {
+                    'isValid' : false,
+                    'type'    : null
+                };
+
+            numberResult = luhn10(number);
+            dateResult = validateDate(dateExpiration);
+
+            return {
+                'isValid' : numberResult && dateResult && cvv.length >= 3,
+                'type'    : validType
+            };
+        };
+
+        this.validateDate = function (dateExpiration) {
+            var dateResult;
+
+            dateResult = validateDate(dateExpiration);
+
+            return {
+                'isValid' : dateResult
+            };
+        };
+
+        this.validateCardNumber = function (cardNumber) {
+            var number, numberResult, i, validType;
+
+            if (!cardNumber)
+                return {
+                    'isValid'  : false,
+                    'type'     : null
+                };
+
+            number = cardNumber.toString();
+
+            for (i=0; i<types.length; i++) {
+                if (types[i].exactPattern.test(number)) {
+                    validType = types[i];
+                    break;
+                }
+            }
+
+            if (!validType)
+                return {
+                    'isValid' : false,
+                    'type'    : null
+                };
+
+            numberResult = luhn10(number);
+
+            return {
+                'isValid' : numberResult,
+                'type'    : validType
+            };
+        };
+    }
+
+})();
 (function() {
     'use strict';
 
@@ -186,6 +347,10 @@
                 'facebook' : options.facebook,
                 'twitter'  : options.twitter
             };
+        };
+
+        this.getCurrentBusiness =  function () {
+            return options.current_business || 'psicologia';
         };
     }
 
@@ -490,44 +655,6 @@
     }
 
 }());
-(function() {
-    'use strict';
-
-    angular
-        .module('plingUiLite')
-        .service('cacheService', CachingService);
-
-    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
-
-    function CachingService($templateCache, $route, $http) {
-
-
-        this.cacheViews = function (cacheObj, routeObj) {
-
-            // setting defaults
-            var
-                partial, route,
-                viewCache = cacheObj || $templateCache,
-                router = routeObj || $route;
-
-            // looping routes
-            for (route in router.routes) {
-
-                if (router.routes.hasOwnProperty(route)) {
-
-                    // evaluate partial
-                    partial = router.routes[route].templateUrl;
-
-                    if (partial)
-                        // caching route
-                        $http.get(partial, {'cache': viewCache});
-                }
-            }
-        };
-    }
-
-}());
-
 (function (context, logger) {
     'use strict';
 
@@ -791,6 +918,44 @@
     // creating instance
     context.loader = new ConfLoader();
 }(window.pling));
+(function() {
+    'use strict';
+
+    angular
+        .module('plingUiLite')
+        .service('cacheService', CachingService);
+
+    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
+
+    function CachingService($templateCache, $route, $http) {
+
+
+        this.cacheViews = function (cacheObj, routeObj) {
+
+            // setting defaults
+            var
+                partial, route,
+                viewCache = cacheObj || $templateCache,
+                router = routeObj || $route;
+
+            // looping routes
+            for (route in router.routes) {
+
+                if (router.routes.hasOwnProperty(route)) {
+
+                    // evaluate partial
+                    partial = router.routes[route].templateUrl;
+
+                    if (partial)
+                        // caching route
+                        $http.get(partial, {'cache': viewCache});
+                }
+            }
+        };
+    }
+
+}());
+
 (function() {
     'use strict';
 
