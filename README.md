@@ -1,5 +1,6 @@
 <p align="center">
-  <img alt="PlingUi" src="https://cloud.githubusercontent.com/assets/205932/18031482/283c5e84-6cb9-11e6-8cb3-9b51c4b90692.png" />
+  <h1>Pling UI</h1>
+  <img alt="PlingUi" src="http://lite.lv/wp-content/uploads/2015/07/lite_logo_A.png" />
 </p>
 
 > **Pling UI Lite** é um framework sem componentes a fim de suportar aplicações desenvolvidas pela Pling na qual não se necessita de componentes de UI, no qual utiliza AngularJS para prover o bootstrap da aplicação se beneficiando da injeção de arquivo de configuração, proporcionando um ambiente desacoplado, funcional e divertido de trabalhar.
@@ -51,11 +52,11 @@ npm run build --src C:\Users\...\Desktop\...\vendor\pling-ui-lite
     
 ## Time
 
-PlingUI-Lite é mantido por um dos times mais FOD%#$%@! do país [developerStars](https://github.com/plingbr/pling-ui-lite/graphs/contributors).
+Time do [PlingUI](https://github.com/plingbr/pling-ui/graphs/contributors).
 
-[![Evandro Mello](https://avatars2.githubusercontent.com/u/3782187?v=3&s=70)](https://github.com/evandromello) | [![Ezequiel Mross](https://avatars1.githubusercontent.com/u/6461113?v=3&s=70)](https://github.com/ezequielmross) | [![Felipe Brizola](https://avatars0.githubusercontent.com/u/5969512?v=3&s=70)](https://github.com/FelipeBrizola) | [![Felipe Kautzmann](https://avatars3.githubusercontent.com/u/205932?v=3&s=70)](https://github.com/felipekm) | [![Felipe Achutti](https://avatars0.githubusercontent.com/u/11965581?v=3&s=70)](https://github.com/achutti) | [![Rodolfo Mota](https://avatars2.githubusercontent.com/u/11947679?v=3&s=70)](https://github.com/rodolfogordo10) | [![Tales Baz](https://avatars1.githubusercontent.com/u/6804621?v=3&s=70)](https://github.com/talesbaz) | [![Ivan Stumpf](https://avatars1.githubusercontent.com/u/8162419?v=3&s=70)](https://github.com/istumpf) | [![Eduardo Curcino](https://avatars0.githubusercontent.com/u/8633059?v=3&s=70)](https://github.com/eduardocrn)
+[![Evandro Mello](https://avatars2.githubusercontent.com/u/3782187?v=3&s=70)](https://github.com/evandromello) | [![Ezequiel Mross](https://avatars1.githubusercontent.com/u/6461113?v=3&s=70)](https://github.com/ezequielmross) | [![Felipe Kautzmann](https://avatars3.githubusercontent.com/u/205932?v=3&s=70)](https://github.com/felipekm) | [![Rodolfo Mota](https://avatars2.githubusercontent.com/u/11947679?v=3&s=70)](https://github.com/rodolfogordo10) | [![Ivan Stumpf](https://avatars1.githubusercontent.com/u/8162419?v=3&s=70)](https://github.com/istumpf) | [![Eduardo Curcino](https://avatars0.githubusercontent.com/u/8633059?v=3&s=70)](https://github.com/eduardocrn)
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-[Evandro Mello](https://github.com/evandromello) | [Ezequiel Mross](https://github.com/ezequielmross) | [Felipe Brizola](https://github.com/FelipeBrizola) | [Felipe Kautzmann](https://github.com/felipekm) | [Felipe Achutti](https://github.com/achutti) | [Rodolpho Mota](https://github.com/rodolfogordo10) | [Tales Baz](https://github.com/talesbaz) | [Ivan Stumpf](https://github.com/istumpf) | [Eduardo Curcino](https://github.com/eduardocrn)
+[Evandro Mello](https://github.com/evandromello) | [Ezequiel Mross](https://github.com/ezequielmross) | [Felipe Kautzmann](https://github.com/felipekm) | [Rodolfo Mota](https://github.com/rodolfogordo10) | [Ivan Stumpf](https://github.com/istumpf) | [Eduardo Curcino](https://github.com/eduardocrn)
 
 ## Histórico
 
