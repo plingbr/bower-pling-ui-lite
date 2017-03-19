@@ -401,7 +401,7 @@
                         if (err)
                             return deferred.reject(err);
 
-                        return deferred.resolve(null, credential);
+                        return deferred.resolve(credential);
                     });
                 })
                 .error(function(reason) {
