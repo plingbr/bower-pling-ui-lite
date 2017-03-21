@@ -674,7 +674,7 @@
 
             options.core_url = options.environment === 'local' ? options.local_core_url || options.core_url : options.core_url;
 
-            var // eslint-disable-line
+            var
                 token         = window.localStorage['PLING-TOKEN'],
                 queryString   = window.localStorage['PLING-QUERY-STRING'] || window.location.search,
                 coreUrl       = options.core_url,
@@ -695,58 +695,55 @@
                 return false;
             }
 
-            // No authentication
-            if ('auth' in options && options.auth === false) {
-                if (!token) {
-                    // saving boot settings
-                    angular.module(appname).value('boot.options', options); // eslint-disable-line
+           // No authentication
+           if ('auth' in options && options.auth === false) {
+               // saving boot settings
+               angular.module(appname).value('boot.options', options); // eslint-disable-line
 
-                    // starting app
-                    angular.bootstrap(root, [appname]);
-                    self.isBootstrapped = true;
+               // starting app
+               angular.bootstrap(root, [appname]);
+               self.isBootstrapped = true;
 
-                    // calling callback
-                    if (cb) cb();
-                }
-                else {
-                    $http
-                    .get(coreUrl + defApiVersion + '/accounts/me' + '?appmodule=' + appname + '&environment=' + environment, {
-                        'headers': { 'Authorization': token }
-                    })
-                    .success(function(credentialData) {
-                        window.localStorage.setItem('PLING-APPS', JSON.stringify(credentialData.profilesProducts));
+               // calling callback
+               if (cb) cb();
 
-                        delete credentialData.profilesProducts;
-                        delete credentialData.iat;
-                        delete credentialData.exp;
+               return false;
+           } else if (token) {
+               $http
+                 .get(coreUrl + defApiVersion + '/accounts/me' + '?appmodule=' + appname + '&environment=' + environment, {
+                   'headers': { 'Authorization': token }
+                 })
+                 .success(function(credentialData) {
+                   window.localStorage.setItem('PLING-APPS', JSON.stringify(credentialData.profilesProducts));
 
-                        window.localStorage.setItem('PLING-USER', JSON.stringify(credentialData));
+                   delete credentialData.profilesProducts;
+                   delete credentialData.iat;
+                   delete credentialData.exp;
 
-                        // saving boot settings
-                        angular.module(appname).value('boot.options', options); // eslint-disable-line
+                   window.localStorage.setItem('PLING-USER', JSON.stringify(credentialData));
 
-                        // starting app
-                        angular.bootstrap(root, [appname]);
-                        self.isBootstrapped = true;
+                   // saving boot settings
+                   angular.module(appname).value('boot.options', options); // eslint-disable-line
 
-                        // calling callback
-                        if (cb) cb();
-                    })
-                    .error(function(reason) {
-                        logger.error(reason);
-                        window.localStorage.clear();
-                        window.localStorage.setItem('PLING-CURRENT-APP', appname);
-                        window.localStorage.setItem('PLING-CURRENT-ENV', environment);
-                        // saving boot settings
-                        angular.module(appname).value('boot.options', options); // eslint-disable-line
-                        // starting app
-                        angular.bootstrap(root, [appname]);
-                        self.isBootstrapped = true;
-                    });
-                }
+                   // starting app
+                   angular.bootstrap(root, [appname]);
+                   self.isBootstrapped = true;
 
-                return false;
-            }
+                   // calling callback
+                   if (cb) cb();
+                 })
+                 .error(function(reason) {
+                   logger.error(reason);
+                   window.localStorage.clear();
+                   window.localStorage.setItem('PLING-CURRENT-APP', appname);
+                   window.localStorage.setItem('PLING-CURRENT-ENV', environment);
+                   // saving boot settings
+                   angular.module(appname).value('boot.options', options); // eslint-disable-line
+                   // starting app
+                   angular.bootstrap(root, [appname]);
+                   self.isBootstrapped = true;
+               });
+           }
 
             // checking for the token
             if (!token && queryString.indexOf('token=') === 1) {
@@ -836,6 +833,7 @@
     context.boot = new Bootstrapper();
 
 }(window.pling, window.console));
+
 (function (dom, logger, context) {
     'use strict';
 

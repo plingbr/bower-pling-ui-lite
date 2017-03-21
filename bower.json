@@ -1,7 +1,7 @@
 {
     "name": "pling-ui-lite",
     "description": "Lightweight Pling Framework",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "main": "pling-ui-lite.js",
     "moduleType": "amd",
     "license": "UNLICENSED",
