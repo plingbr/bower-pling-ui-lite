@@ -20,27 +20,27 @@ gulp <command>
 
 2. Instale as dependências globais do projeto:
 
-    ```
-[sudo] npm install -g gulp
-    ```
+```
+npm install -g gulp
+```
 
 3. Instale as dependências locais do projeto:
 
-    ```
+```
 npm install
-    ```
+```
 
 4. Gerando os arquivos de Build do PlingUI-Lite:
 
-    ```
+```
 npm run build
-    ```
+```
 
 5. Gerando os arquivos de Build do PlingUI-Lite em uma pasta específica (*Evita a cópia dos mesmo arrastando*):
 
-    ```
+```
 npm run build --src C:\Users\...\Desktop\...\vendor\pling-ui-lite
-    ```
+```
 
 ## Histórico
 
