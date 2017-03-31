@@ -109,7 +109,7 @@
             'prefixPattern' : /^4$/,
             'exactPattern' : /^4\d*$/,
             'gaps' : [4, 8, 12],
-            'lengths' : [16],
+            'lengths' : [13, 16],
             'code' : {
                 'name' : 'CVV',
                 'size' : 3
@@ -121,6 +121,32 @@
             'type' : 2,
             'prefixPattern' : /^(5|5[1-5]|2|22|222|222[1-9]|2[3-6]|27[0-1]|2720)$/,
             'exactPattern' : /^(5[1-5]|222[1-9]|2[3-6]|27[0-1]|2720)\d*$/,
+            'gaps' : [4, 8, 12],
+            'lengths' : [16],
+            'code' : {
+                'name' : 'CVV',
+                'size' : 3
+            }
+        });
+
+        types.push({
+            'niceType' : 'Diners Club',
+            'type' : 3,
+            'prefixPattern' : /^(36|38|30[0-5])$/,
+            'exactPattern' : /^(36|38|30[0-5])\d*$/,
+            'gaps' : [4, 8, 12],
+            'lengths' : [14, 16],
+            'code' : {
+                'name' : 'CVV',
+                'size' : 3
+            }
+        });
+
+        types.push({
+            'niceType' : 'Elo',
+            'type' : 4,
+            'prefixPattern' : /^(636368|636369|438935|504175|451416|636297|5067|4576|4011|506699)$/,
+            'exactPattern' : /^(636368|636369|438935|504175|451416|636297|5067|4576|4011|506699)\d*$/,
             'gaps' : [4, 8, 12],
             'lengths' : [16],
             'code' : {
@@ -655,6 +681,44 @@
     }
 
 }());
+(function() {
+    'use strict';
+
+    angular
+        .module('plingUiLite')
+        .service('cacheService', CachingService);
+
+    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
+
+    function CachingService($templateCache, $route, $http) {
+
+
+        this.cacheViews = function (cacheObj, routeObj) {
+
+            // setting defaults
+            var
+                partial, route,
+                viewCache = cacheObj || $templateCache,
+                router = routeObj || $route;
+
+            // looping routes
+            for (route in router.routes) {
+
+                if (router.routes.hasOwnProperty(route)) {
+
+                    // evaluate partial
+                    partial = router.routes[route].templateUrl;
+
+                    if (partial)
+                        // caching route
+                        $http.get(partial, {'cache': viewCache});
+                }
+            }
+        };
+    }
+
+}());
+
 (function (context, logger) {
     'use strict';
 
@@ -916,44 +980,6 @@
     // creating instance
     context.loader = new ConfLoader();
 }(window.pling));
-(function() {
-    'use strict';
-
-    angular
-        .module('plingUiLite')
-        .service('cacheService', CachingService);
-
-    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
-
-    function CachingService($templateCache, $route, $http) {
-
-
-        this.cacheViews = function (cacheObj, routeObj) {
-
-            // setting defaults
-            var
-                partial, route,
-                viewCache = cacheObj || $templateCache,
-                router = routeObj || $route;
-
-            // looping routes
-            for (route in router.routes) {
-
-                if (router.routes.hasOwnProperty(route)) {
-
-                    // evaluate partial
-                    partial = router.routes[route].templateUrl;
-
-                    if (partial)
-                        // caching route
-                        $http.get(partial, {'cache': viewCache});
-                }
-            }
-        };
-    }
-
-}());
-
 (function() {
     'use strict';
 
