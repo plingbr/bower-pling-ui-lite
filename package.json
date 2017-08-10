@@ -1,6 +1,6 @@
 {
     "name": "pling-ui-lite",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Pling UI Lite Web framework",
     "main": "pling-ui-lite.js",
     "author": "Pling <contato@pling.net.br>",

@@ -347,7 +347,7 @@
                         $window.location.href = data.callbackUrl + callbackQueryString;
                 })
                 .error(function() {
-                    console.log('Erro ao obter URL para aplicação de Login'); // eslint-disable-line
+                    console.error('Erro ao obter URL para aplicação de Login'); // eslint-disable-line
                     $rootScope.$emit('PLING-SERVICE-BAR-ISLOADING', false);
                     return false;
                 });
@@ -362,7 +362,7 @@
                         $window.location.href = data.callbackUrl;
                 })
                 .error(function() {
-                    console.log('Erro ao obter URL para Minha Conta'); // eslint-disable-line
+                    console.error('Erro ao obter URL para Minha Conta'); // eslint-disable-line
                     $rootScope.$emit('PLING-SERVICE-BAR-ISLOADING', false);
                     return false;
                 });
@@ -681,44 +681,6 @@
     }
 
 }());
-(function() {
-    'use strict';
-
-    angular
-        .module('plingUiLite')
-        .service('cacheService', CachingService);
-
-    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
-
-    function CachingService($templateCache, $route, $http) {
-
-
-        this.cacheViews = function (cacheObj, routeObj) {
-
-            // setting defaults
-            var
-                partial, route,
-                viewCache = cacheObj || $templateCache,
-                router = routeObj || $route;
-
-            // looping routes
-            for (route in router.routes) {
-
-                if (router.routes.hasOwnProperty(route)) {
-
-                    // evaluate partial
-                    partial = router.routes[route].templateUrl;
-
-                    if (partial)
-                        // caching route
-                        $http.get(partial, {'cache': viewCache});
-                }
-            }
-        };
-    }
-
-}());
-
 (function (context, logger) {
     'use strict';
 
@@ -754,13 +716,14 @@
             // checking errors...
             if (err) {
                 logger.warn('Arquivo de configuracao nao encontrado!');
-                logger.debug(err);
+                console.error(err);
 
                 return false;
             }
 
            // No authentication
            if ('auth' in options && options.auth === false) {
+
                // saving boot settings
                angular.module(appname).value('boot.options', options); // eslint-disable-line
 
@@ -801,8 +764,10 @@
                    window.localStorage.clear();
                    window.localStorage.setItem('PLING-CURRENT-APP', appname);
                    window.localStorage.setItem('PLING-CURRENT-ENV', environment);
+
                    // saving boot settings
                    angular.module(appname).value('boot.options', options); // eslint-disable-line
+
                    // starting app
                    angular.bootstrap(root, [appname]);
                    self.isBootstrapped = true;
@@ -921,16 +886,10 @@
             context.source = root.getAttribute(source) || 'pling.conf.json';
 
             // loading config file
-            logger.info('AngularJS 1.5.x spa check:', true);
             context.boot.Angular(root, context.name, context.source, function (err) {
-
                 if (err) logger.error('Could not boot app ', context.name);
-                else logger.info('Bootstrapped:', context.boot.isBootstrapped);
-
             });
 
-        } else {
-            logger.info('AngularJS 1.5.x spa check:', false);
         }
     }
 
@@ -980,6 +939,44 @@
     // creating instance
     context.loader = new ConfLoader();
 }(window.pling));
+(function() {
+    'use strict';
+
+    angular
+        .module('plingUiLite')
+        .service('cacheService', CachingService);
+
+    CachingService.$inject = [ '$templateCache', '$route', '$http' ];
+
+    function CachingService($templateCache, $route, $http) {
+
+
+        this.cacheViews = function (cacheObj, routeObj) {
+
+            // setting defaults
+            var
+                partial, route,
+                viewCache = cacheObj || $templateCache,
+                router = routeObj || $route;
+
+            // looping routes
+            for (route in router.routes) {
+
+                if (router.routes.hasOwnProperty(route)) {
+
+                    // evaluate partial
+                    partial = router.routes[route].templateUrl;
+
+                    if (partial)
+                        // caching route
+                        $http.get(partial, {'cache': viewCache});
+                }
+            }
+        };
+    }
+
+}());
+
 (function() {
     'use strict';
 
@@ -1125,7 +1122,7 @@
             logger.error(exception);
 
             if (cause) {
-                logger.debug(cause);
+                console.error(cause);
             }
 
             // dispatching message
@@ -1162,6 +1159,10 @@
 
                 'warn': function () {
                     this.dispatch('warn', arguments);
+                },
+
+                'debug': function () {
+                    this.dispatch('debug', arguments);
                 },
 
                 'dispatch': function (method, params) {
